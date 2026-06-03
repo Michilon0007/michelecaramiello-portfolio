@@ -279,6 +279,41 @@ footer{padding:32px 48px;display:flex;justify-content:space-between;align-items:
 .modal-embeds-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:48px;}
 .embed-item{background:#fff;border-radius:6px;overflow:hidden;}
 
+
+/* VIDEO PLAYER */
+.video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:52px;}
+.video-item{
+  position:relative;background:#000;border-radius:4px;overflow:hidden;
+  aspect-ratio:9/16;cursor:pointer;
+}
+.video-item.landscape{aspect-ratio:16/9;}
+.video-item video{width:100%;height:100%;object-fit:cover;display:block;}
+.video-item .vid-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.7) 0%,transparent 50%);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .3s;
+}
+.video-item:hover .vid-overlay,.video-item.playing .vid-overlay{opacity:0;}
+.vid-play-btn{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--gradient);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .25s;
+}
+.video-item:hover .vid-play-btn{transform:scale(1.08);}
+.vid-play-btn svg{width:22px;height:22px;fill:#fff;margin-left:3px;}
+.vid-controls{
+  position:absolute;bottom:0;left:0;right:0;padding:12px;
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 100%);
+  opacity:0;transition:opacity .2s;
+}
+.video-item:hover .vid-controls,.video-item.playing .vid-controls{opacity:1;}
+.vid-progress{flex:1;height:3px;background:rgba(255,255,255,.2);border-radius:2px;cursor:pointer;position:relative;}
+.vid-progress-fill{height:100%;background:var(--gradient);border-radius:2px;width:0;transition:width .1s;}
+.vid-time{font-family:"Syne",sans-serif;font-size:.6rem;color:rgba(255,255,255,.6);white-space:nowrap;}
+
 /* BEHANCE LINK */
 .behance-link{
   display:inline-flex;align-items:center;gap:12px;
@@ -849,6 +884,8 @@ const projects = {
     
     imageFolder:"pizzomotors",
     imageCount:8,
+    videoFiles:["reel-01.mp4","reel-02.mp4","reel-03.mp4","reel-04.mp4","reel-05.mp4"],
+    videoOrientation:"portrait",
     links:[]
   },
   milka:{
@@ -895,7 +932,7 @@ const projects = {
     year:"2024",
     role:"Web Developer & Photographer",
     client:"DVR Ricambi",
-    description:"Complete website production and product photography for one of Campania\'s largest automotive parts companies. The project included building the full website, photographing the entire product inventory for e-commerce listings, and setting up the digital infrastructure for online sales.",
+    description:"Complete digital project for <strong>DVR Ricambi</strong>, one of Campania\'s largest automotive spare parts distributors. The work covered the full e-commerce platform: <strong>website production</strong> built on a custom PrestaShop infrastructure with an extensive catalogue of categories (brakes, filters, engine components, suspension, exhaust, electrical systems and more), <strong>product photography</strong> across the entire inventory for e-commerce listings, and digital infrastructure setup including catalogue integration, navigation structure, and online sales configuration.",
     imageFolder:"dvr",
     imageCount:6,
     links:[{label:"Website",url:"https://www.dvrricambi.it/"}]
@@ -920,7 +957,7 @@ const projects = {
     year:"2024–2025",
     role:"Photographer, Video Producer & Website Content Creator",
     client:"Nino & Friends — Sorrento, Italy",
-    description:"Extensive visual content production for <strong>Nino & Friends</strong>, an Italian food brand born in Sorrento and present in the most touristic cities across Italy. The brand specialises in gastronomic excellence — artisanal chocolate, sweets, savory products, and limoncello — delivered through experiential boutiques and e-commerce.<br><br>The project included a large-format RAW photography campaign (<strong>3,900+ files</strong>) for the brand\'s website and e-commerce, video content production and editing, and ongoing visual storytelling that captures the brand\'s identity: Italian craftsmanship, tradition, and warmth.",
+    description:"Complete visual content production for <strong>Nino & Friends</strong>, an Italian food brand born in Sorrento, present in the most touristic cities across Italy — specialising in artisanal chocolate, sweets, savory products, and limoncello delivered through experiential boutiques and e-commerce.<br><br>The scope covered the full content pipeline: <strong>e-commerce product photography</strong> for online listings, social media content creation and publication management, and <strong>professional shootings at multiple Italian locations</strong> — including in-factory sessions and outdoor storytelling shoots at the brand\'s boutiques across Italy. 3,900+ RAW files produced across multiple campaigns.",
     imageFolder:"ninoandfriends",
     imageCount:8,
     links:[{label:"Website",url:"https://ninoandfriends.com/"}]
@@ -968,7 +1005,7 @@ const projects = {
     year:"2025–2026",
     role:"E-commerce Photographer & Video Producer",
     client:"Accadueo Beachwear — Italian Swimwear",
-    description:"Product photography and video production for <strong>Accadueo Beachwear</strong>, an Italian swimwear brand. The work covered two key areas:<br><br><strong>E-commerce photography</strong> — professional still life and model shooting of the entire swimwear collection, with post-production for clean, consistent product imagery for the online store.<br><br><strong>Video content production</strong> — filming inside the brand\'s production workshop, capturing the craftsmanship and manufacturing process for social media content and brand storytelling.",
+    description:"Photography and video production for <strong>Accadueo Beachwear</strong>, an Italian swimwear brand. The project focused on two deliverables:<br><br><strong>E-commerce product photography</strong> — professional shooting and post-production of selected swimwear pieces for the brand\'s online store, ensuring clean, consistent, retail-ready imagery.<br><br><strong>Social media video content</strong> — filming sessions inside the brand\'s production workshop and offices, capturing the manufacturing process, craftsmanship details, and behind-the-scenes brand storytelling for Reels.",
     imageFolder:"accadueo",
     imageCount:8,
     links:[{label:"Website",url:"https://www.accadueobeachwear.it/"}]
@@ -1016,6 +1053,22 @@ function openModal(key){
 
   // Media: gallery + external links
   let mediaHTML="";
+  // VIDEO PLAYER (for projects with local video files)
+  if(p.videoFiles && p.videoFiles.length){
+    const orientation = p.videoOrientation || "portrait";
+    const vidItems = p.videoFiles.map(f=>`
+      <div class="video-item ${orientation==='landscape'?'landscape':''}">
+        <video src="images/${p.imageFolder}/${f}" preload="metadata" playsinline></video>
+        <div class="vid-overlay">
+          <div class="vid-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="vid-controls">
+          <div class="vid-progress"><div class="vid-progress-fill"></div></div>
+          <span class="vid-time">0:00</span>
+        </div>
+      </div>`).join("");
+    mediaHTML+=`<div class="modal-section-title">Video</div><div class="video-grid">${vidItems}</div>`;
+  }
   // Image gallery
   if(p.imageFolder){
     let imgList=[];
@@ -1050,7 +1103,48 @@ document.querySelectorAll(".proj-card[data-project]").forEach(card=>{
 });
 modalClose.addEventListener("click",closeModal);
 document.getElementById("modalBackdrop").addEventListener("click",closeModal);
-,(e)=>{if(e.key==="Escape")closeModal();});
+document.addEventListener("keydown",(e)=>{if(e.key==="Escape")closeModal();});
+
+// ── VIDEO PLAYERS ──
+document.addEventListener("click", e => {
+  const vi = e.target.closest(".video-item");
+  if(!vi) return;
+  const vid = vi.querySelector("video");
+  if(!vid) return;
+  if(vid.paused){
+    // Pause all others
+    document.querySelectorAll(".video-item video").forEach(v=>{ if(v!==vid){v.pause();v.closest(".video-item").classList.remove("playing");}});
+    vid.play();
+    vi.classList.add("playing");
+  } else {
+    vid.pause();
+    vi.classList.remove("playing");
+  }
+});
+document.addEventListener("click", e => {
+  const prog = e.target.closest(".vid-progress");
+  if(!prog) return;
+  const vi = prog.closest(".video-item");
+  const vid = vi.querySelector("video");
+  const rect = prog.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  vid.currentTime = pct * vid.duration;
+});
+setInterval(() => {
+  document.querySelectorAll(".video-item").forEach(vi => {
+    const vid = vi.querySelector("video");
+    const fill = vi.querySelector(".vid-progress-fill");
+    const time = vi.querySelector(".vid-time");
+    if(!vid || !fill) return;
+    if(vid.duration) fill.style.width = (vid.currentTime/vid.duration*100)+"%";
+    if(time && vid.duration){
+      const cur = Math.floor(vid.currentTime);
+      const tot = Math.floor(vid.duration);
+      time.textContent = `${String(Math.floor(cur/60)).padStart(2,"0")}:${String(cur%60).padStart(2,"0")} / ${String(Math.floor(tot/60)).padStart(2,"0")}:${String(tot%60).padStart(2,"0")}`;
+    }
+  });
+}, 250);
+
 </script>
 </body>
 </html>
