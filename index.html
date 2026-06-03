@@ -198,30 +198,46 @@ footer{padding:32px 48px;display:flex;justify-content:space-between;align-items:
 }
 .modal-cover-body{
   position:absolute;bottom:0;left:0;right:0;
-  padding:40px 48px 48px;z-index:2;
+  padding:0 40px 0;z-index:2;
 }
-@media(max-width:700px){.modal-cover-body{padding:24px 24px 32px;}}
+@media(max-width:700px){.modal-cover-body{padding:0 20px 0;}}
+
+/* The "layer" — frosted glass card that gives depth */
+.modal-text-layer{
+  background:rgba(7,7,7,0.55);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.07);
+  border-bottom:none;
+  padding:32px 40px 28px;
+  position:relative;
+}
+.modal-text-layer::before{
+  content:"";position:absolute;top:0;left:0;right:0;
+  height:1px;background:var(--gradient);opacity:.4;
+}
+@media(max-width:700px){.modal-text-layer{padding:20px 24px 18px;}}
+
+.modal-cover-title{
+  font-family:"Cormorant",serif;
+  font-size:clamp(2.4rem,6.5vw,6rem);
+  font-weight:300;line-height:.9;
+  color:#fff;margin-bottom:18px;
+}
 .modal-cover-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
 .modal-cover-tag{
   font-family:"Syne",sans-serif;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;
   background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;border:1px solid rgba(196,32,104,0.25);padding:3px 10px;
 }
-.modal-cover-title{
-  font-family:"Cormorant",serif;
-  font-size:clamp(2.8rem,7vw,7rem);
-  font-weight:300;line-height:.88;
-  color:#fff;margin-bottom:22px;
-}
-.modal-cover-meta{display:flex;flex-wrap:wrap;gap:0;align-items:center;}
+.modal-cover-meta{display:flex;flex-wrap:wrap;gap:0;align-items:center;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);}
 .modal-cover-meta-item{
-  font-family:"DM Sans",sans-serif;font-size:.78rem;
-  color:rgba(255,255,255,0.45);font-weight:300;
+  font-family:"DM Sans",sans-serif;font-size:.76rem;
+  color:rgba(255,255,255,0.4);font-weight:300;
   padding-right:16px;margin-right:16px;
-  border-right:1px solid rgba(255,255,255,0.12);
+  border-right:1px solid rgba(255,255,255,0.1);
 }
 .modal-cover-meta-item:last-child{border-right:none;}
-.modal-cover-meta-item strong{color:rgba(255,255,255,0.75);font-weight:400;}
+.modal-cover-meta-item strong{color:rgba(255,255,255,0.78);font-weight:400;}
 
 /* BODY */
 .modal-body{padding:48px 48px 80px;background:var(--bg);}
@@ -248,21 +264,67 @@ footer{padding:32px 48px;display:flex;justify-content:space-between;align-items:
   gap:6px;
   margin-bottom:52px;
 }
-.gal-item{overflow:hidden;background:var(--surface);}
+.gal-item{overflow:hidden;background:var(--surface);position:relative;will-change:transform;}
 .gal-item img{width:100%;height:100%;object-fit:cover;display:block;
-  transition:transform .9s cubic-bezier(.16,1,.3,1);}
+  transition:transform .9s cubic-bezier(.16,1,.3,1);
+  image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;}
 .gal-item:hover img{transform:scale(1.04);}
 
-/* Editorial positions */
-.gal-item:nth-child(1){grid-column:1/8;aspect-ratio:5/4;}
-.gal-item:nth-child(2){grid-column:8/13;aspect-ratio:3/4;margin-top:36px;}
-.gal-item:nth-child(3){grid-column:1/13;aspect-ratio:21/8;}
-.gal-item:nth-child(4){grid-column:1/5;aspect-ratio:1/1;}
-.gal-item:nth-child(5){grid-column:5/9;aspect-ratio:1/1;margin-top:-44px;}
-.gal-item:nth-child(6){grid-column:9/13;aspect-ratio:1/1;}
-.gal-item:nth-child(7){grid-column:1/7;aspect-ratio:4/3;}
-.gal-item:nth-child(8){grid-column:7/13;aspect-ratio:4/3;}
-.gal-item:nth-child(n+9){grid-column:span 4;aspect-ratio:1/1;}
+/* EDITORIAL — aggressive stagger & overlap */
+.gal-item:nth-child(1){
+  grid-column:1/8;aspect-ratio:5/4;z-index:1;
+  transform:rotate(-.4deg) translateY(0);
+}
+.gal-item:nth-child(2){
+  grid-column:6/13;aspect-ratio:3/5;z-index:3;
+  transform:translateY(60px) rotate(.3deg);
+  box-shadow:-12px 0 40px rgba(0,0,0,.7);
+}
+.gal-item:nth-child(3){
+  grid-column:1/13;aspect-ratio:21/7;z-index:0;
+  transform:translateY(-40px);
+  margin-bottom:-40px;
+}
+.gal-item:nth-child(4){
+  grid-column:1/5;aspect-ratio:3/4;z-index:2;
+  transform:rotate(-.6deg) translateY(20px);
+  box-shadow:8px 8px 30px rgba(0,0,0,.6);
+}
+.gal-item:nth-child(5){
+  grid-column:3/9;aspect-ratio:4/3;z-index:4;
+  transform:translateY(-70px) rotate(.5deg);
+  box-shadow:0 12px 50px rgba(0,0,0,.8);
+  margin-bottom:-70px;
+}
+.gal-item:nth-child(6){
+  grid-column:7/13;aspect-ratio:3/4;z-index:2;
+  transform:rotate(.4deg) translateY(15px);
+}
+.gal-item:nth-child(7){
+  grid-column:1/7;aspect-ratio:16/9;z-index:1;
+  transform:translateY(-20px);margin-bottom:-20px;
+}
+.gal-item:nth-child(8){
+  grid-column:6/13;aspect-ratio:1/1;z-index:3;
+  transform:translateY(-50px) rotate(-.3deg);
+  margin-bottom:-50px;
+  box-shadow:-10px -10px 40px rgba(0,0,0,.6);
+}
+.gal-item:nth-child(9){
+  grid-column:1/5;aspect-ratio:1/1;
+  transform:rotate(.5deg);
+}
+.gal-item:nth-child(10){
+  grid-column:4/9;aspect-ratio:1/1;z-index:2;
+  transform:translateY(-30px);margin-bottom:-30px;
+}
+.gal-item:nth-child(11){
+  grid-column:8/13;aspect-ratio:4/5;
+  transform:rotate(-.4deg);
+}
+.gal-item:nth-child(n+12){
+  grid-column:span 4;aspect-ratio:1/1;
+}
 
 @media(max-width:700px){
   .modal-gallery{grid-template-columns:1fr 1fr;gap:4px;}
@@ -549,7 +611,7 @@ footer{padding:32px 48px;display:flex;justify-content:space-between;align-items:
     </div>
 
     <!-- DIDIESSE -->
-    <div class="proj-card half reveal" data-cats="brand" data-project="didiesse">
+    <div class="proj-card third reveal" data-cats="brand" data-project="didiesse">
       <div class="card-bg" style="background-image:url('images/didiesse/cover.jpg'),linear-gradient(135deg,#0a0c0e,#0e1016);background-size:cover;background-position:center top;"></div>
       <div class="card-overlay"></div>
       <span class="card-year">2024</span>
@@ -641,7 +703,7 @@ footer{padding:32px 48px;display:flex;justify-content:space-between;align-items:
     </div>
 
     <!-- BASILICO -->
-    <div class="proj-card half reveal" data-cats="brand social photo video" data-project="basilico">
+    <div class="proj-card medium reveal" data-cats="brand social photo video" data-project="basilico">
       <div class="card-bg" style="background-image:url('images/basilico/cover.jpg'),url('https://mir-s3-cdn-cf.behance.net/projects/original/1d195a173988799.Y3JvcCw4MDgsNjMyLDAsMA.png'),linear-gradient(135deg,#0f0905,#1a1008);background-size:cover;background-position:center;"></div>
       <div class="card-overlay"></div>
       <span class="card-year">2022</span>
@@ -933,8 +995,6 @@ const projects = {
     role:"Web Developer & Photographer",
     client:"DVR Ricambi",
     description:"Complete digital project for <strong>DVR Ricambi</strong>, one of Campania\'s largest automotive spare parts distributors. The work covered the full e-commerce platform: <strong>website production</strong> built on a custom PrestaShop infrastructure with an extensive catalogue of categories (brakes, filters, engine components, suspension, exhaust, electrical systems and more), <strong>product photography</strong> across the entire inventory for e-commerce listings, and digital infrastructure setup including catalogue integration, navigation structure, and online sales configuration.",
-    imageFolder:"dvr",
-    imageCount:6,
     links:[{label:"Website",url:"https://www.dvrricambi.it/"}]
   },
 
@@ -1022,6 +1082,48 @@ const projects = {
     imageCount:6,
     links:[]
   },
+  villamirabilis:{
+    title:"Villa Mirabilis",
+    coverUrl:"https://mir-s3-cdn-cf.behance.net/projects/original/d767d4174148649.Y3JvcCw4MDksNjMyLDE4MiwyNTg.jpg",
+    heroGradient:"linear-gradient(135deg,#1a1208 0%,#2a1e0e 100%)",
+    tags:["Events Villa","Social Media","Meta Ads","Photography","Video","Weddings"],
+    year:"2022–2024",
+    role:"Social Media Manager, Photographer & Video Producer",
+    client:"Villa Mirabilis",
+    description:"Complete social media strategy and content production for <strong>Villa Mirabilis</strong>, a luxury events venue. The scope covered the full creative pipeline: on-location photography and videography for events and weddings, editorial content for Instagram and Facebook, Meta Ads management, and ongoing publication and feed management.<br><br>The project included <strong>professional wedding photography and video</strong> — capturing ceremonies, receptions, and portrait sessions — alongside branded content for the venue's regular events calendar.",
+    imageFolder:"villamirabilis",
+    imageCount:10,
+    behanceUrl:"https://www.behance.net/gallery/174148649/Villa-Mirabilis-Social-Media-Content-Creation",
+    links:[]
+  },
+  autoone:{
+    title:"Auto One",
+    coverUrl:"https://mir-s3-cdn-cf.behance.net/projects/original/54b7bb187832449.65916ad398117.jpg",
+    heroGradient:"linear-gradient(135deg,#0a0b12 0%,#141620 100%)",
+    tags:["Brand Identity","Automotive","Social Media","Visual Identity"],
+    year:"2022–2023",
+    role:"Creative Director & Social Media Manager",
+    client:"Auto One",
+    description:"Complete <strong>brand and social identity</strong> for Auto One, an automotive company. The project covered the full visual system — logo, graphic identity, color palette and typography — as well as social media strategy and content creation for Instagram and Facebook.<br><br>The brand identity positioned Auto One as a premium automotive service provider, with a distinctive visual language designed to communicate reliability, professionalism, and quality.",
+    imageFolder:"autoone",
+    imageCount:8,
+    behanceUrl:"https://www.behance.net/gallery/187832449/Autoone-Brand-Social-Identity",
+    links:[]
+  },
+  basilico:{
+    title:"Basilico",
+    coverUrl:"https://mir-s3-cdn-cf.behance.net/projects/original/1d195a173988799.Y3JvcCw4MDgsNjMyLDAsMA.png",
+    heroGradient:"linear-gradient(135deg,#180c04 0%,#241408 100%)",
+    tags:["Branding","Social Media","Photography","Video","Ristorazione"],
+    year:"2022",
+    role:"Creative Director, Photographer & Social Media Manager",
+    client:"Basilico Pizzeria Napoletana",
+    description:"Full creative project for <strong>Basilico Pizzeria Napoletana</strong>, covering brand identity, content creation, and professional photography and video production. The work included conceptual branding, social media strategy and ongoing feed management, styled food and atmosphere photography, and video content — all crafted to communicate the authenticity and craft of Neapolitan pizza-making.",
+    imageFolder:"basilico",
+    imageCount:8,
+    behanceUrl:"https://www.behance.net/gallery/173988799/Pizzeria-Basilico-Social-Media-Project",
+    links:[]
+  }
 };
 
 // ── MODAL ──
@@ -1040,12 +1142,14 @@ function openModal(key){
 
   // Cover body: tags + title + meta (single occurrence)
   document.getElementById("modalCoverBody").innerHTML=`
-    <div class="modal-cover-tags">${p.tags.map(t=>`<span class="modal-cover-tag">${t}</span>`).join("")}</div>
-    <h2 class="modal-cover-title">${p.title}</h2>
-    <div class="modal-cover-meta">
-      <span class="modal-cover-meta-item"><strong>${p.year}</strong></span>
-      <span class="modal-cover-meta-item">${p.role}</span>
-      <span class="modal-cover-meta-item"><strong>${p.client}</strong></span>
+    <div class="modal-text-layer">
+      <h2 class="modal-cover-title">${p.title}</h2>
+      <div class="modal-cover-tags">${p.tags.map(t=>`<span class="modal-cover-tag">${t}</span>`).join("")}</div>
+      <div class="modal-cover-meta">
+        <span class="modal-cover-meta-item"><strong>${p.year}</strong></span>
+        <span class="modal-cover-meta-item">${p.role}</span>
+        <span class="modal-cover-meta-item"><strong>${p.client}</strong></span>
+      </div>
     </div>`;
 
   // Description
